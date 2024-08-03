@@ -48,4 +48,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(200);
 
     }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        super.unsuccessfulAuthentication(request, response, failed);
+        response.setStatus(401);
+    }
 }

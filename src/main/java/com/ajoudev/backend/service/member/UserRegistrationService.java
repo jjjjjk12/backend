@@ -53,7 +53,7 @@ public class UserRegistrationService {
                 .joiningDate(member.getJoiningDate().toString())
                 .build();
 
-        return RegistrationMessageDTO.builder().stats("correct").user(user).build();
+        return RegistrationMessageDTO.builder().stats("success").user(user).build();
     }
 
 

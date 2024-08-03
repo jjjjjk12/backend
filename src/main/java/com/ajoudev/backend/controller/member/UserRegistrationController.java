@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,14 +17,14 @@ public class UserRegistrationController {
     private final UserRegistrationService userRegistrationService;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> userRegister(@ModelAttribute UserRegistrationDTO userRegistrationDTO) {
+    public ResponseEntity<Object> userRegister(@RequestBody UserRegistrationDTO userRegistrationDTO) {
         RegistrationMessageDTO messageDTO = userRegistrationService.registerMember(userRegistrationDTO);
 
         if (messageDTO.getStats().equals("error")) {
             return ResponseEntity.status(401).body(messageDTO);
         }
 
-        if (messageDTO.getStats().equals("correct")) {
+        if (messageDTO.getStats().equals("success")) {
             return ResponseEntity.ok(messageDTO);
         }
 
