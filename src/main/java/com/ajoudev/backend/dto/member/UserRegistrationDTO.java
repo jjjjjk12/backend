@@ -34,9 +34,4 @@ public class UserRegistrationDTO {
     @NotBlank(message = "이메일을 입력해주세요")
     @Email(message = "이메일 형식에 맞지 않습니다")
     private String email;
-
-    @NotBlank(message = "이름을 입력해주세요")
-    @Size(min = 1, max = 32, message = "이름은 최대 32자까지 가능합니다")
-    @Pattern(regexp = "^[a-zA-Z가-힣]{2,32}$", message = "이름은 알파벳, 한글만 가능합니다")
-    private String name;
 }

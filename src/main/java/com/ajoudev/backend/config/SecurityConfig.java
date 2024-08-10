@@ -43,7 +43,7 @@ public class SecurityConfig {
         security.formLogin(auth -> auth.disable());
         security.httpBasic(auth -> auth.disable());
         security.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/reissue").permitAll()
+                .requestMatchers("/login", "/register", "/reissue", "/validateID").permitAll()
                 .anyRequest().authenticated());
         security.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         security.addFilterAt(new LoginFilter(manager(configuration), tokenService), UsernamePasswordAuthenticationFilter.class)

@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 public class Member {
 
     @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     private String nickname;

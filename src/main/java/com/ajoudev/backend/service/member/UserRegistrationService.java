@@ -2,6 +2,7 @@ package com.ajoudev.backend.service.member;
 
 import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
+import com.ajoudev.backend.dto.member.UserIDDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.repository.member.MemberRepository;
@@ -27,14 +28,13 @@ public class UserRegistrationService {
     public RegistrationMessageDTO registerMember(UserRegistrationDTO userRegistrationDTO) {
 
         if (memberRepository.existsByUserid(userRegistrationDTO.getId())) {
-            return RegistrationMessageDTO.builder().stats("error").message("중복된 아이디입니다").build();
+            return RegistrationMessageDTO.builder().status("error").message("중복된 아이디입니다").build();
         }
         for (ConstraintViolation<UserRegistrationDTO> violation : Validation.buildDefaultValidatorFactory().getValidator().validate(userRegistrationDTO)) {
-            return RegistrationMessageDTO.builder().stats("error").message(violation.getMessage()).build();
+            return RegistrationMessageDTO.builder().status("error").message(violation.getMessage()).build();
         }
 
         Member member = Member.builder()
-                .name(userRegistrationDTO.getName())
                 .userid(userRegistrationDTO.getId())
                 .nickname(userRegistrationDTO.getNickname())
                 .password(encoder.encode(userRegistrationDTO.getPassword()))
@@ -49,11 +49,14 @@ public class UserRegistrationService {
                 .id(member.getUserid())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .name(member.getName())
                 .joiningDate(member.getJoiningDate().toString())
                 .build();
 
-        return RegistrationMessageDTO.builder().stats("success").user(user).build();
+        return RegistrationMessageDTO.builder().status("success").user(user).build();
+    }
+
+    public boolean validateDuplicateID(UserIDDTO user) {
+        return memberRepository.existsByUserid(user.getId());
     }
 
 

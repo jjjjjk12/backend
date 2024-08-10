@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegistrationMessageDTO {
-    private String stats;
+    private String status;
     private String message;
     private UserDTO user;
 
