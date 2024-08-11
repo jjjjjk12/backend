@@ -4,6 +4,7 @@ import com.ajoudev.backend.jwt.JWTFilter;
 import com.ajoudev.backend.jwt.JWTUtil;
 import com.ajoudev.backend.jwt.LoginFilter;
 import com.ajoudev.backend.jwt.LogoutFilter;
+import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.service.member.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration configuration;
     private final TokenService tokenService;
+    private final MemberRepository memberRepository;
     private final JWTUtil jwtUtil;
 
     @Bean
@@ -43,10 +45,10 @@ public class SecurityConfig {
         security.formLogin(auth -> auth.disable());
         security.httpBasic(auth -> auth.disable());
         security.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/reissue", "/validateID").permitAll()
+                .requestMatchers("/login", "/register", "/reissue", "/validateID", "/logout").permitAll()
                 .anyRequest().authenticated());
         security.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        security.addFilterAt(new LoginFilter(manager(configuration), tokenService), UsernamePasswordAuthenticationFilter.class)
+        security.addFilterAt(new LoginFilter(manager(configuration), tokenService, memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         security.addFilterBefore(new LogoutFilter(tokenService), org.springframework.security.web.authentication.logout.LogoutFilter.class);
 

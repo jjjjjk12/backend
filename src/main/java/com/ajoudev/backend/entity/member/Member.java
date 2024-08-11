@@ -1,6 +1,7 @@
 package com.ajoudev.backend.entity.member;
 
 
+import com.ajoudev.backend.dto.member.UserDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,4 +38,12 @@ public class Member {
     @Column(nullable = false)
     private LocalDateTime joiningDate;
 
+    public UserDTO toUserDTO() {
+        return UserDTO.builder()
+                .id(getUserid())
+                .email(getEmail())
+                .nickname(getNickname())
+                .joiningDate(getJoiningDate().toString())
+                .build();
+    }
 }

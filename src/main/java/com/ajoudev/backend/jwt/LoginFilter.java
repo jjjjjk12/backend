@@ -1,7 +1,10 @@
 package com.ajoudev.backend.jwt;
 
+import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
+import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserDetailsDTO;
 import com.ajoudev.backend.dto.member.UserLoginDTO;
+import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.service.member.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -22,6 +25,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final MemberRepository memberRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -44,8 +48,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         UserDetailsDTO userDetailsDTO = (UserDetailsDTO) authResult.getPrincipal();
         String id = userDetailsDTO.getUsername();
 
+        UserDTO user = memberRepository.findByUserid(id).get().toUserDTO();
+        RegistrationMessageDTO message = RegistrationMessageDTO.builder()
+                .status("success")
+                .user(user)
+                .build();
+        String body = (new ObjectMapper()).writeValueAsString(message);
+
         tokenService.issueToken(response,id);
         response.setStatus(200);
+        response.getWriter().write(body);
 
     }
 

@@ -42,10 +42,6 @@ public class TokenService {
             response.getWriter().write("{ \"message\": \"REFRESH 토큰이 없습니다\" }");
             return false;
         }
-        if (!jwtUtil.getCategory(refresh).equals("refresh")) {
-            response.getWriter().write("{ \"message\": \"유효한 REFRESH 토큰이 아닙니다\" }");
-            return false;
-        }
         if (!refreshTokenRepository.existsByRefresh(refresh)) {
             response.getWriter().write("{ \"message\": \"존재하지 않는 REFRESH 토큰입니다\" }");
             return false;
@@ -55,6 +51,10 @@ public class TokenService {
         } catch (Exception e) {
             refreshTokenRepository.deleteByRefresh(refresh);
             response.getWriter().write("{ \"message\": \"REFRESH 토큰이 만료되었습니다\" }");
+            return false;
+        }
+        if (!jwtUtil.getCategory(refresh).equals("refresh")) {
+            response.getWriter().write("{ \"message\": \"유효한 REFRESH 토큰이 아닙니다\" }");
             return false;
         }
 
