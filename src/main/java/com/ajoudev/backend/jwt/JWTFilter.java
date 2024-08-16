@@ -14,14 +14,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final String[] exceptURL;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String url = request.getRequestURI();
+        if(Arrays.asList(exceptURL).contains(url)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null) {
@@ -53,12 +61,11 @@ public class JWTFilter extends OncePerRequestFilter {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsDTO, null, userDetailsDTO.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         filterChain.doFilter(request, response);
     }
 
     private void setBody(HttpServletResponse response,String str) throws IOException {
-        response.getWriter().write("{\n" + "\t\"message\": \"" + str + "\"");
+        response.getWriter().write("{\n" + "\t\"message\": \"" + str + "\"\n}");
     }
 
 }

@@ -1,16 +1,16 @@
 package com.ajoudev.backend.service.post;
 
 import com.ajoudev.backend.dto.post.request.NewPostDTO;
+import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
-import com.ajoudev.backend.exception.post.NullTextBodyException;
-import com.ajoudev.backend.exception.post.NullTitleException;
-import com.ajoudev.backend.exception.post.PostNotFoundException;
-import com.ajoudev.backend.exception.post.PostingException;
+import com.ajoudev.backend.exception.post.*;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +35,7 @@ public class PostingService {
 
     }
 
+    @Transactional(readOnly = true)
     public ViewPostDTO viewPost(Long postNum) {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
@@ -45,11 +46,19 @@ public class PostingService {
 
     public ViewPostDTO editPost(NewPostDTO postDTO, Long postNum) throws PostingException {
         validatePost(postDTO);
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
+        if (!id.equals(post.getUser().getUserid())) throw new NotEditableException();
 
         post.edit(postDTO.getTitle(), postDTO.getTextBody());
         return post.toViewPostDTO();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostPageDTO> findAll(Pageable pageable) {
+        Page<Post> page = postRepository.findAll(pageable);
+        return page.map(Post::toPostPageDTO);
     }
 
     private void validatePost(NewPostDTO postDTO) {

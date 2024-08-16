@@ -19,7 +19,7 @@ public class ReissueController {
     private final JWTUtil jwtUtil;
     private final TokenService tokenService;
 
-    @PostMapping("/reissue")
+    @PostMapping("/api/reissue")
     public ResponseEntity<Object> reissueToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refresh = request.getHeader("X-Refresh-Token");
         if (!tokenService.validateRefreshToken(response,refresh)) {

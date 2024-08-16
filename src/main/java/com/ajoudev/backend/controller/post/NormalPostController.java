@@ -6,7 +6,11 @@ import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.exception.post.PostingException;
 import com.ajoudev.backend.service.post.PostingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,12 +42,12 @@ public class NormalPostController {
         return ResponseEntity.ok().body(messageDTO);
     }
 
-    @GetMapping("/{postNum}")
-    public ResponseEntity<Object> viewPost(@PathVariable Long postNum) {
+    @GetMapping
+    public ResponseEntity<Object> viewPost(@RequestParam Long post) {
         PostMessageDTO messageDTO;
 
         try {
-            ViewPostDTO viewPostDTO = postingService.viewPost(postNum);
+            ViewPostDTO viewPostDTO = postingService.viewPost(post);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .post(viewPostDTO)
@@ -60,12 +64,12 @@ public class NormalPostController {
         return ResponseEntity.ok().body(messageDTO);
     }
 
-    @PostMapping("/{postNum}/edit")
-    public ResponseEntity<Object> editPost(@PathVariable Long postNum, @RequestBody NewPostDTO newPostDTO) {
+    @PostMapping("/edit")
+    public ResponseEntity<Object> editPost(@RequestParam Long post, @RequestBody NewPostDTO newPostDTO) {
         PostMessageDTO messageDTO;
 
         try {
-            ViewPostDTO viewPostDTO = postingService.editPost(newPostDTO, postNum);
+            ViewPostDTO viewPostDTO = postingService.editPost(newPostDTO, post);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .post(viewPostDTO)
@@ -80,5 +84,13 @@ public class NormalPostController {
         }
 
         return ResponseEntity.ok().body(messageDTO);
+    }
+
+    @GetMapping("/list")
+    public PostMessageDTO viewList(@PageableDefault(size = 10, sort = "postingDate", direction = Sort.Direction.DESC)Pageable pageable) {
+        return PostMessageDTO.builder()
+                .status("success")
+                .posts(postingService.findAll(pageable))
+                .build();
     }
 }

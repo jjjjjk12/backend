@@ -1,5 +1,6 @@
 package com.ajoudev.backend.entity.post;
 
+import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class Post {
     private String textBody;
     @Column(nullable = false)
     private String postBoard;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
     private Member user;
     @Column
@@ -63,6 +64,19 @@ public class Post {
                 .like(likeIt)
                 .visit(visit)
                 .build();
+    }
+
+    public PostPageDTO toPostPageDTO() {
+        return PostPageDTO.builder()
+                .postNum(postNum)
+                .title(title)
+                .user(user.getNickname())
+                .postingDate(postingDate)
+                .like(likeIt)
+                .visit(visit)
+                .comment(0L)
+                .build();
+
     }
 
 

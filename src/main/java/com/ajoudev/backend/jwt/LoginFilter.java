@@ -27,6 +27,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
 
+    {
+        setFilterProcessesUrl("/api/login");
+    }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         setUsernameParameter("id");

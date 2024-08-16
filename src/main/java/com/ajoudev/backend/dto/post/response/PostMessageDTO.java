@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @Builder
 @Data
@@ -15,4 +16,5 @@ public class PostMessageDTO {
     private String status;
     private String message;
     private ViewPostDTO post;
+    private Page<PostPageDTO> posts;
 }
