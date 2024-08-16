@@ -35,11 +35,10 @@ public class PostingService {
 
     }
 
-    @Transactional(readOnly = true)
     public ViewPostDTO viewPost(Long postNum) {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
-
+        post.addVisit();
         return post.toViewPostDTO();
 
     }

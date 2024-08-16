@@ -1,6 +1,5 @@
-package com.ajoudev.backend.dto.post.response;
+package com.ajoudev.backend.dto.comment.response;
 
-import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +12,9 @@ import org.springframework.data.domain.Page;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostMessageDTO {
+public class CommentMessageDTO {
+
     private String status;
     private String message;
-    private ViewPostDTO post;
-    private Page<PostPageDTO> posts;
     private Page<CommentPageDTO> comments;
 }

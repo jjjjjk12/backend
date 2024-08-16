@@ -1,11 +1,14 @@
 package com.ajoudev.backend.controller.post;
 
+import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
 import com.ajoudev.backend.dto.post.request.NewPostDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.exception.post.PostingException;
+import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.post.PostingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class NormalPostController {
 
     private final PostingService postingService;
+    private final CommentingService commentingService;
 
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(@RequestBody NewPostDTO postDTO) {
@@ -43,16 +47,19 @@ public class NormalPostController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> viewPost(@RequestParam Long post) {
+    public ResponseEntity<Object> viewPost(@PageableDefault(size = 20, sort = "commentingDate", direction = Sort.Direction.ASC)Pageable pageable,
+            @RequestParam Long post) {
         PostMessageDTO messageDTO;
 
         try {
             ViewPostDTO viewPostDTO = postingService.viewPost(post);
+            Page<CommentPageDTO> comments = commentingService.findByPage(pageable, post);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .post(viewPostDTO)
+                    .comments(comments)
                     .build();
-        } catch (PostingException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
                     .status("error")
@@ -60,6 +67,7 @@ public class NormalPostController {
                     .build();
             return ResponseEntity.ok().body(messageDTO);
         }
+
 
         return ResponseEntity.ok().body(messageDTO);
     }

@@ -1,5 +1,6 @@
-package com.ajoudev.backend.repository.post;
+package com.ajoudev.backend.repository.comment;
 
+import com.ajoudev.backend.entity.comment.Comment;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
 import org.springframework.data.domain.Page;
@@ -12,13 +13,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
-    @Override
+public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"user"})
-    public Page<Post> findAll(Pageable pageable);
+    public Page<Comment> findPageByPost(Post post, Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "UPDATE Post p SET p.user = null WHERE p.user = :user ")
+    @Query(value = "UPDATE Comment c SET c.user = null WHERE c.user = :user ")
     public void updateNullByUser(@Param("user") Member user);
 
+    @EntityGraph(attributePaths = {"post", "user"})
+    public Optional<Comment> findByCommentNum(Long commentNum);
 }

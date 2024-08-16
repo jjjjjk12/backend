@@ -38,6 +38,8 @@ public class Post {
     private Long visit;
     @Column(nullable = false)
     private LocalDateTime postingDate;
+    @Column
+    private Long comments;
 
     public void create(String title, String textBody, String postBoard, Member user) {
         this.title = title;
@@ -46,12 +48,20 @@ public class Post {
         this.user = user;
         this.likeIt = 0L;
         this.visit = 0L;
+        this.comments = 0L;
         this.postingDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
     }
 
     public void edit(String title, String textBody) {
         this.title = title;
         this.textBody = textBody;
+    }
+
+    public Long addVisit() {
+        return visit++;
+    }
+    public Long addComments() {
+        return comments++;
     }
 
     public ViewPostDTO toViewPostDTO() {
@@ -74,7 +84,7 @@ public class Post {
                 .postingDate(postingDate)
                 .like(likeIt)
                 .visit(visit)
-                .comment(0L)
+                .comment(comments)
                 .build();
 
     }
