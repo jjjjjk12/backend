@@ -63,8 +63,13 @@ public class Post {
     public Long addComments() {
         return comments++;
     }
+    public Long addLikeIt() {
+        return likeIt++;
+    }
 
-    public ViewPostDTO toViewPostDTO() {
+    public Long cancelLike(){ return likeIt--; }
+
+    public ViewPostDTO toViewPostDTO(boolean isLiked) {
         return ViewPostDTO.builder()
                 .postNum(postNum)
                 .title(title)
@@ -74,6 +79,7 @@ public class Post {
                 .like(likeIt)
                 .visit(visit)
                 .id(user.getUserid())
+                .isLiked(isLiked)
                 .build();
     }
 

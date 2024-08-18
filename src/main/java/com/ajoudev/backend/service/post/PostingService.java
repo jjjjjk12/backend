@@ -6,6 +6,7 @@ import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.exception.post.*;
+import com.ajoudev.backend.repository.like.LikeRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class PostingService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final LikeRepository likeRepository;
 
     public ViewPostDTO createNewNormalPost(NewPostDTO postDTO) throws PostingException {
         validatePost(postDTO);
@@ -31,7 +33,7 @@ public class PostingService {
 
         Post post = new Post();
         post.create(postDTO.getTitle(), postDTO.getTextBody(), "Nomal", member);
-        return postRepository.save(post).toViewPostDTO();
+        return postRepository.save(post).toViewPostDTO(false);
 
     }
 
@@ -39,7 +41,16 @@ public class PostingService {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
         post.addVisit();
-        return post.toViewPostDTO();
+
+        String id;
+        try {
+            id = SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e) {
+            return post.toViewPostDTO(false);
+        }
+
+        Member user = memberRepository.findByUserid(id).orElse(null);
+        return post.toViewPostDTO(likeRepository.existsByUserAndPost(user,post));
 
     }
 
@@ -51,7 +62,7 @@ public class PostingService {
         if (!id.equals(post.getUser().getUserid())) throw new NotEditableException();
 
         post.edit(postDTO.getTitle(), postDTO.getTextBody());
-        return post.toViewPostDTO();
+        return post.toViewPostDTO(likeRepository.existsByUserAndPost(post.getUser(),post));
     }
 
     @Transactional(readOnly = true)
