@@ -72,6 +72,7 @@ public class SecurityConfig {
                 ,"/api/logout"
                 ,"/api/normal/list"
                 ,"/api/normal"
+                ,"/api/comment/list"
         };
 
         security.csrf(auth -> auth.disable());

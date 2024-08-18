@@ -6,6 +6,7 @@ import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.service.comment.CommentingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,8 @@ public class CommentController {
 
     @PostMapping("/create")
     public CommentMessageDTO create(@RequestParam Long post,
-                       @RequestBody NewCommentDTO commentDTO,
-                       @PageableDefault(size = 20, sort = "commentingDate", direction = Sort.Direction.ASC) Pageable pageable) {
+                       @RequestBody @Valid NewCommentDTO commentDTO,
+                       @PageableDefault(size = 20) Pageable pageable) {
         CommentMessageDTO messageDTO;
 
         try {
@@ -45,8 +46,8 @@ public class CommentController {
     }
 
     @PostMapping("/edit")
-    public CommentMessageDTO edit(@RequestBody EditCommentDTO commentDTO,
-                     @PageableDefault(size = 20, sort = "commentingDate", direction = Sort.Direction.ASC) Pageable pageable) {
+    public CommentMessageDTO edit(@RequestBody @Valid EditCommentDTO commentDTO,
+                     @PageableDefault(size = 20) Pageable pageable) {
         CommentMessageDTO messageDTO;
 
         try {
@@ -67,7 +68,7 @@ public class CommentController {
     }
     
     @GetMapping("/list")
-    public CommentMessageDTO view(@RequestParam Long post, @PageableDefault(size = 20, sort = "commentingDate", direction = Sort.Direction.ASC) Pageable pageable) {
+    public CommentMessageDTO view(@RequestParam Long post, @PageableDefault(size = 20) Pageable pageable) {
         CommentMessageDTO messageDTO;
 
         try {

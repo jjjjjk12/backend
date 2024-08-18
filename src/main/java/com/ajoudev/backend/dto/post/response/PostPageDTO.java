@@ -15,6 +15,7 @@ public class PostPageDTO {
     private Long postNum;
     private String title;
     private String user;
+    private String id;
     private LocalDateTime postingDate;
     private Long visit;
     private Long like;

@@ -17,6 +17,7 @@ public class ViewPostDTO {
     private Long postNum;
     private String title;
     private String textBody;
+    private String id;
     private String user;
     private Long like;
     private Long visit;

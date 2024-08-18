@@ -7,6 +7,7 @@ import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.exception.post.PostingException;
 import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.post.PostingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class NormalPostController {
     private final CommentingService commentingService;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createPost(@RequestBody NewPostDTO postDTO) {
+    public ResponseEntity<Object> createPost(@RequestBody @Valid NewPostDTO postDTO) {
         PostMessageDTO messageDTO;
 
         try {
@@ -73,7 +74,7 @@ public class NormalPostController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Object> editPost(@RequestParam Long post, @RequestBody NewPostDTO newPostDTO) {
+    public ResponseEntity<Object> editPost(@RequestParam Long post, @RequestBody @Valid NewPostDTO newPostDTO) {
         PostMessageDTO messageDTO;
 
         try {

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -30,6 +32,9 @@ public class Comment {
     @Column(name = "commentNum", nullable = false)
     private Long commentNum;
 
+    @Column
+    private Long parentComment;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
     private Member user;
@@ -37,8 +42,9 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime commentingDate;
 
-    public void create(String commentBody, Post post, Member user) {
+    public void createComment(String commentBody, Post post, Member user) {
         this.commentBody = commentBody;
+        this.parentComment = null;
         this.post = post;
         this.user = user;
         this.commentingDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
@@ -51,10 +57,27 @@ public class Comment {
                 .commentBody(commentBody)
                 .commentingDate(commentingDate)
                 .user(user.getNickname())
+                .id(user.getUserid())
                 .build();
     }
 
-    public void edit(String commentBody) {
+    public void editComment(String commentBody) {
         this.commentBody = commentBody;
     }
+
+    public void createReply(String commentBody, Post post, Member user, Long parentComment) {
+        this.commentBody = commentBody;
+        this.parentComment = parentComment;
+        this.post = post;
+        this.user = user;
+        this.commentingDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+    }
+
+    @PostPersist
+    public void prePersist() {
+        if (this.parentComment == null) {
+            this.parentComment = this.commentNum;
+        }
+    }
+
 }

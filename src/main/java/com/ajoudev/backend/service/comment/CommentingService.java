@@ -40,12 +40,11 @@ public class CommentingService {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
         Comment comment = new Comment();
-        comment.create(commentDTO.getCommentBody(), post, member);
+        comment.createComment(commentDTO.getCommentBody(), post, member);
         post.addComments();
 
         commentRepository.save(comment);
-        Page<Comment> page = commentRepository.findPageByPost(post, pageable);
-        return page.map(Comment::toPageCommentDTO);
+        return commentRepository.searchPage(post, pageable);
 
     }
 
@@ -53,8 +52,7 @@ public class CommentingService {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
 
-        Page<Comment> page = commentRepository.findPageByPost(post, pageable);
-        return page.map(Comment::toPageCommentDTO);
+        return commentRepository.searchPage(post, pageable);
     }
 
     public Page<CommentPageDTO> editComment(EditCommentDTO commentDTO, Pageable pageable) throws RuntimeException {
@@ -67,8 +65,7 @@ public class CommentingService {
         if (member == null || comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
             throw new NotEditableException();
 
-        comment.edit(commentDTO.getCommentBody());
-        Page<Comment> page = commentRepository.findPageByPost(comment.getPost(), pageable);
-        return page.map(Comment::toPageCommentDTO);
+        comment.editComment(commentDTO.getCommentBody());
+        return commentRepository.searchPage(comment.getPost(), pageable);
     }
 }

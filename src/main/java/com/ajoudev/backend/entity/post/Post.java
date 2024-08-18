@@ -73,6 +73,7 @@ public class Post {
                 .postingDate(postingDate)
                 .like(likeIt)
                 .visit(visit)
+                .id(user.getUserid())
                 .build();
     }
 
@@ -85,6 +86,7 @@ public class Post {
                 .like(likeIt)
                 .visit(visit)
                 .comment(comments)
+                .id(user.getUserid())
                 .build();
 
     }

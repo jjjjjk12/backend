@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCommentDTO {
+public class NewCommentReplyDTO {
     @NotBlank(message = "댓글 내용을 입력해주세요")
     private String commentBody;
+    private Long parent;
 }

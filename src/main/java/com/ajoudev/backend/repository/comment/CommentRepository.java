@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long>, CommentingRepository {
     @EntityGraph(attributePaths = {"user"})
     public Page<Comment> findPageByPost(Post post, Pageable pageable);
 
