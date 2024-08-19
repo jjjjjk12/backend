@@ -33,7 +33,7 @@ public class CommentingRepositoryImpl implements CommentingRepository {
                         comment.commentingDate
                 ))
                 .from(comment)
-                .join(comment.user, commentMember)
+                .leftJoin(comment.user, commentMember)
                 .where(comment.post.eq(post))
                 .orderBy(comment.parentComment.asc(), comment.commentNum.asc())
                 .offset(pageable.getOffset())

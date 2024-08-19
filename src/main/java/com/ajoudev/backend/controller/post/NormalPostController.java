@@ -102,4 +102,25 @@ public class NormalPostController {
                 .posts(postingService.findAll(pageable))
                 .build();
     }
+
+    @PostMapping("/delete")
+    public PostMessageDTO delete(@RequestParam Long post) {
+        PostMessageDTO messageDTO;
+
+        try {
+            postingService.deletePost(post);
+            messageDTO = PostMessageDTO.builder()
+                    .status("success")
+                    .build();
+        } catch (PostingException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message("게시글을 삭제할 수 없습니다")
+                    .build();
+            return messageDTO;
+        }
+
+        return messageDTO;
+    }
 }

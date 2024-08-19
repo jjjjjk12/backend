@@ -8,6 +8,7 @@ import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.exception.comment.NullCommentBodyException;
 import com.ajoudev.backend.exception.post.NotEditableException;
+import com.ajoudev.backend.exception.post.NotRemovableException;
 import com.ajoudev.backend.exception.post.PostNotFoundException;
 import com.ajoudev.backend.repository.comment.CommentRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
@@ -66,6 +67,24 @@ public class CommentingService {
             throw new NotEditableException();
 
         comment.editComment(commentDTO.getCommentBody());
+        return commentRepository.searchPage(comment.getPost(), pageable);
+    }
+
+    public Page<CommentPageDTO> deleteComment(Long commentNum, Pageable pageable) throws RuntimeException {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByUserid(id).orElse(null);
+        Comment comment = commentRepository.findByCommentNum(commentNum).orElse(null);
+
+        if (member == null || comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
+            throw new NotRemovableException();
+
+        if (commentRepository.countByParentComment(commentNum) > 1) {
+            commentRepository.updateNull(commentNum);
+        }
+        else {
+            commentRepository.deleteById(commentNum);
+        }
+        comment.getPost().deleteComments();
         return commentRepository.searchPage(comment.getPost(), pageable);
     }
 }

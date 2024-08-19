@@ -1,5 +1,6 @@
 package com.ajoudev.backend.controller.comment;
 
+import com.ajoudev.backend.dto.comment.request.DeleteCommentDTO;
 import com.ajoudev.backend.dto.comment.request.EditCommentDTO;
 import com.ajoudev.backend.dto.comment.request.NewCommentDTO;
 import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
@@ -82,6 +83,28 @@ public class CommentController {
             messageDTO = CommentMessageDTO.builder()
                     .status("error")
                     .message("댓글을 가져올 수 없습니다")
+                    .build();
+            return messageDTO;
+        }
+        return messageDTO;
+    }
+
+    @PostMapping("/delete")
+    public CommentMessageDTO delete(@RequestBody DeleteCommentDTO commentDTO,
+                                    @PageableDefault(size = 20) Pageable pageable) {
+        CommentMessageDTO messageDTO;
+
+        try {
+            Page<CommentPageDTO> comments = commentingService.deleteComment(commentDTO.getCommentNum(), pageable);
+            messageDTO = CommentMessageDTO.builder()
+                    .status("success")
+                    .comments(comments)
+                    .build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message("댓글을 삭제할 수 없습니다")
                     .build();
             return messageDTO;
         }

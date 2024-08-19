@@ -21,6 +21,16 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     @Query(value = "UPDATE Comment c SET c.user = null WHERE c.user = :user ")
     public void updateNullByUser(@Param("user") Member user);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "Update Comment c SET c.user = null, c.commentBody = '삭제된 댓글입니다' WHERE c.commentNum = :id")
+    public void updateNull(@Param("id") Long commentNum);
+
     @EntityGraph(attributePaths = {"post", "user"})
     public Optional<Comment> findByCommentNum(Long commentNum);
+
+    public Long countByParentComment(Long ParentComment);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE Comment c WHERE c.post = :post")
+    public void deleteByPost(Post post);
 }

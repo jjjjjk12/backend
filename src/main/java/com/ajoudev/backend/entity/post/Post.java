@@ -69,6 +69,8 @@ public class Post {
 
     public Long cancelLike(){ return likeIt--; }
 
+    public Long deleteComments(){ return  comments--; }
+
     public ViewPostDTO toViewPostDTO(boolean isLiked) {
         return ViewPostDTO.builder()
                 .postNum(postNum)
