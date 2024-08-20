@@ -1,6 +1,7 @@
 package com.ajoudev.backend.service.member;
 
 import com.ajoudev.backend.dto.comment.response.MyCommentPageDTO;
+import com.ajoudev.backend.dto.member.EditUserDTO;
 import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
@@ -54,16 +55,17 @@ public class UserService {
         memberRepository.delete(user);
     }
 
-    public UserDTO edit(UserRegistrationDTO userDTO) throws MemberException {
+    public UserDTO edit(EditUserDTO userDTO) throws MemberException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member user = memberRepository.findByUserid(id).orElse(null);
         if (user == null) throw new NotFoundUserException("회원 정보를 수정할 수 없습니다");
+        if (validatePW(userDTO.getPassword(), user)) throw new MemberException("잘못된 비밀번호입니다");
 
 
         if (memberRepository.existsByUserid(userDTO.getId())) {
             throw new MemberException("중복된 아이디입니다");
         }
-        for (ConstraintViolation<UserRegistrationDTO> violation : Validation.buildDefaultValidatorFactory().getValidator().validate(userDTO)) {
+        for (ConstraintViolation<EditUserDTO> violation : Validation.buildDefaultValidatorFactory().getValidator().validate(userDTO)) {
             if(violation.getInvalidValue() == null) continue;
             throw new MemberException(violation.getMessage());
         }
@@ -94,5 +96,7 @@ public class UserService {
         return postRepository.searchLikedPostsPage(user, pageable);
     }
 
-
+    private boolean validatePW(String pw, Member user) {
+        return  (user.getPassword().equals(encoder.encode(pw)));
+    }
 }

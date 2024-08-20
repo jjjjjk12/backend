@@ -1,6 +1,7 @@
 package com.ajoudev.backend.entity.member;
 
 
+import com.ajoudev.backend.dto.member.EditUserDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
 import jakarta.persistence.Column;
@@ -48,9 +49,9 @@ public class Member {
                 .build();
     }
 
-    public void changInfo(UserRegistrationDTO userDTO, BCryptPasswordEncoder encoder) {
+    public void changInfo(EditUserDTO userDTO, BCryptPasswordEncoder encoder) {
         if (userDTO.getId() != null) userid = userDTO.getId();
-        if (userDTO.getPassword() != null) password = encoder.encode(userDTO.getPassword());
+        if (userDTO.getNewPassword() != null) password = encoder.encode(userDTO.getNewPassword());
         if (userDTO.getNickname() != null) nickname = userDTO.getNickname();
         if (userDTO.getEmail() != null) email = userDTO.getEmail();
     }

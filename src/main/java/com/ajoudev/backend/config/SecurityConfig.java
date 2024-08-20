@@ -73,6 +73,7 @@ public class SecurityConfig {
                 ,"/api/comment/list"
                 ,"/api/member/posts"
                 ,"/api/member/comments"
+                ,"/api/search/posts"
         };
 
         security.csrf(auth -> auth.disable());

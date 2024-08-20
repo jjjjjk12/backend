@@ -2,6 +2,7 @@ package com.ajoudev.backend.controller.member;
 
 import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.MyCommentPageDTO;
+import com.ajoudev.backend.dto.member.EditUserDTO;
 import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
@@ -45,11 +46,11 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public RegistrationMessageDTO edit(UserRegistrationDTO userRegistrationDTO) {
+    public RegistrationMessageDTO edit(@RequestBody EditUserDTO editUserDTO) {
         RegistrationMessageDTO messageDTO;
 
         try {
-            UserDTO userDTO = userService.edit(userRegistrationDTO);
+            UserDTO userDTO = userService.edit(editUserDTO);
             messageDTO = RegistrationMessageDTO.builder()
                     .status("success")
                     .user(userDTO)
