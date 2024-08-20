@@ -21,4 +21,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "UPDATE Post p SET p.user = null WHERE p.user = :user ")
     public void updateNullByUser(@Param("user") Member user);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE Post p SET p.comments = p.comments - (SELECT COUNT(c2) FROM  Comment c2 " +
+            "WHERE c2.user = :user AND c2.post = p) " +
+            "WHERE EXISTS (SELECT 1 FROM Comment c WHERE c.user = :user AND c.post = p)")
+    public void updateCommentsByUser(@Param("user") Member user);
+
 }

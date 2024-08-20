@@ -17,4 +17,8 @@ public interface LikeRepository extends JpaRepository<LikeIt, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "DELETE LikeIt l WHERE l.post = :post")
     public void deleteByPost(Post post);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "DELETE LikeIt l WHERE l.user = :user")
+    public void deleteByUser(Member user);
 }

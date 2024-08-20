@@ -18,12 +18,25 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     public Page<Comment> findPageByPost(Post post, Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "UPDATE Comment c SET c.user = null WHERE c.user = :user ")
-    public void updateNullByUser(@Param("user") Member user);
+    @Query(value = "UPDATE comment c JOIN (SELECT parent_comment, COUNT(parent_comment) " +
+            "AS cnt FROM comment GROUP BY parent_comment) child ON c.comment_num = child.parent_comment " +
+            "SET c.userid = null, c.comment_body = '삭제된 댓글입니다' WHERE child.cnt > 1 AND c.userid = :user", nativeQuery = true)
+    public void updateNullByUser(@Param("user") String user);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE Comment c " +
+            "WHERE c.user = :user")
+    public void deleteByUser(@Param("user") Member user);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "Update Comment c SET c.user = null, c.commentBody = '삭제된 댓글입니다' WHERE c.commentNum = :id")
     public void updateNull(@Param("id") Long commentNum);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE c FROM comment AS c JOIN (SELECT parent_comment, COUNT(parent_comment) " +
+            "AS cnt FROM comment GROUP BY parent_comment) child ON c.comment_num = child.parent_comment " +
+            "WHERE child.cnt <= 1 AND c.userid IS NULL", nativeQuery = true)
+    public void deleteAllNulls();
 
     @EntityGraph(attributePaths = {"post", "user"})
     public Optional<Comment> findByCommentNum(Long commentNum);
@@ -33,4 +46,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE Comment c WHERE c.post = :post")
     public void deleteByPost(Post post);
+
 }

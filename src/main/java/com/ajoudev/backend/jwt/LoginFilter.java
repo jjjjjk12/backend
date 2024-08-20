@@ -60,6 +60,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String body = (new ObjectMapper()).writeValueAsString(message);
 
         tokenService.issueToken(response,id);
+        tokenService.deleteRefreshTokenByDate();
         response.setStatus(200);
         response.getWriter().write(body);
 

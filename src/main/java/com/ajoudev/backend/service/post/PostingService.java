@@ -61,7 +61,7 @@ public class PostingService {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
-        if (!id.equals(post.getUser().getUserid())) throw new NotEditableException();
+        if (post.getUser() == null || !id.equals(post.getUser().getUserid())) throw new NotEditableException();
 
         post.edit(postDTO.getTitle(), postDTO.getTextBody());
         return post.toViewPostDTO(likeRepository.existsByUserAndPost(post.getUser(),post));

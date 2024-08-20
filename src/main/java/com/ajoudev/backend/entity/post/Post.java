@@ -89,12 +89,12 @@ public class Post {
         return PostPageDTO.builder()
                 .postNum(postNum)
                 .title(title)
-                .user(user.getNickname())
+                .user(user == null ? null : user.getNickname())
                 .postingDate(postingDate)
                 .like(likeIt)
                 .visit(visit)
                 .comment(comments)
-                .id(user.getUserid())
+                .id(user == null ? null : user.getUserid())
                 .build();
 
     }

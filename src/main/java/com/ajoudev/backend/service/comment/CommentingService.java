@@ -84,6 +84,7 @@ public class CommentingService {
         else {
             commentRepository.deleteById(commentNum);
         }
+        commentRepository.deleteAllNulls();
         comment.getPost().deleteComments();
         return commentRepository.searchPage(comment.getPost(), pageable);
     }
