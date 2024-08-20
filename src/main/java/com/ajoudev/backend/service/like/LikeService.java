@@ -4,7 +4,6 @@ import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.like.LikeIt;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
-import com.ajoudev.backend.exception.like.DuplicatedLikeException;
 import com.ajoudev.backend.exception.like.LikeException;
 import com.ajoudev.backend.repository.like.LikeRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;

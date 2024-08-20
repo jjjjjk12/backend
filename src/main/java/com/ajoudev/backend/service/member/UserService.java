@@ -1,8 +1,10 @@
 package com.ajoudev.backend.service.member;
 
+import com.ajoudev.backend.dto.comment.response.MyCommentPageDTO;
 import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
+import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.exception.member.MemberException;
 import com.ajoudev.backend.exception.member.NotFoundUserException;
@@ -13,6 +15,7 @@ import com.ajoudev.backend.repository.post.PostRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -69,24 +72,26 @@ public class UserService {
         return user.toUserDTO();
     }
 
-    public void viewComments(String userId, Pageable pageable) {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member user = memberRepository.findByUserid(id).orElse(null);
+    public Page<MyCommentPageDTO> viewComments(String userId, Pageable pageable) {
+        Member user = memberRepository.findByUserid(userId).orElse(null);
         if (user == null) throw new NotFoundUserException("존재하지 않는 회원입니다");
+
+        return commentRepository.searchMyCommentPage(user, pageable);
     }
 
-    public void viewPosts(String userId, Pageable pageable) {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member user = memberRepository.findByUserid(id).orElse(null);
+    public Page<PostPageDTO> viewPosts(String userId, Pageable pageable) {
+        Member user = memberRepository.findByUserid(userId).orElse(null);
         if (user == null) throw new NotFoundUserException("존재하지 않는 회원입니다");
 
+        return postRepository.searchMyPostsPage(user, pageable);
     }
 
-    public void viewLiked(String userId, Pageable pageable) {
+    public Page<PostPageDTO> viewLiked(Pageable pageable) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member user = memberRepository.findByUserid(id).orElse(null);
         if (user == null) throw new NotFoundUserException("존재하지 않는 회원입니다");
 
+        return postRepository.searchLikedPostsPage(user, pageable);
     }
 
 

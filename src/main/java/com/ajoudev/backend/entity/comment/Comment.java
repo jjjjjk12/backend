@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -49,16 +47,6 @@ public class Comment {
         this.user = user;
         this.commentingDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-    }
-
-    public CommentPageDTO toPageCommentDTO() {
-        return CommentPageDTO.builder()
-                .commentNum(commentNum)
-                .commentBody(commentBody)
-                .commentingDate(commentingDate)
-                .user(user.getNickname())
-                .id(user.getUserid())
-                .build();
     }
 
     public void editComment(String commentBody) {

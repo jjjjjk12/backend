@@ -1,9 +1,6 @@
 package com.ajoudev.backend.dto.post.response;
 
-import com.ajoudev.backend.entity.member.Member;
 import com.querydsl.core.annotations.QueryProjection;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

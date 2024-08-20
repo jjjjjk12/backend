@@ -4,7 +4,6 @@ import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

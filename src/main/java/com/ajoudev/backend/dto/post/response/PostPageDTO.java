@@ -1,6 +1,6 @@
 package com.ajoudev.backend.dto.post.response;
 
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
 public class PostPageDTO {
     private Long postNum;
     private String title;
@@ -20,4 +19,16 @@ public class PostPageDTO {
     private Long visit;
     private Long like;
     private Long comment;
+
+    @QueryProjection
+    public PostPageDTO(Long postNum, String title, String user, String id, LocalDateTime postingDate, Long visit, Long like, Long comment) {
+        this.postNum = postNum;
+        this.title = title;
+        this.user = user;
+        this.id = id;
+        this.postingDate = postingDate;
+        this.visit = visit;
+        this.like = like;
+        this.comment = comment;
+    }
 }

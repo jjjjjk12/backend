@@ -16,5 +16,5 @@ public class CommentMessageDTO {
 
     private String status;
     private String message;
-    private Page<CommentPageDTO> comments;
+    private Page<? extends CommentDTO> comments;
 }

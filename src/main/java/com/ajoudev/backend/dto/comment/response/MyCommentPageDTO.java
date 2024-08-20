@@ -10,23 +10,23 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Builder
-public class CommentPageDTO implements CommentDTO{
+public class MyCommentPageDTO implements CommentDTO{
     private String commentBody;
     private Long commentNum;
-    private Long parent;
     private String user;
     private String id;
     private LocalDateTime commentingDate;
+    private String postTitle;
+    private Long postNum;
 
     @QueryProjection
-    public CommentPageDTO(String commentBody, Long commentNum, Long parent, String user,
-                   String id, LocalDateTime commentingDate) {
+    public MyCommentPageDTO(String commentBody, Long commentNum, String user, String id, LocalDateTime commentingDate, String postTitle, Long postNum) {
         this.commentBody = commentBody;
         this.commentNum = commentNum;
-        this.parent = parent;
         this.user = user;
         this.id = id;
         this.commentingDate = commentingDate;
-
+        this.postTitle = postTitle;
+        this.postNum = postNum;
     }
 }

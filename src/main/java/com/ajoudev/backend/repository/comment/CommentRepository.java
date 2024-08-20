@@ -14,8 +14,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long>, CommentingRepository {
-    @EntityGraph(attributePaths = {"user"})
-    public Page<Comment> findPageByPost(Post post, Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE comment c JOIN (SELECT parent_comment, COUNT(parent_comment) " +

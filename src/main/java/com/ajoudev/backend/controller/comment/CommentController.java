@@ -5,15 +5,12 @@ import com.ajoudev.backend.dto.comment.request.EditCommentDTO;
 import com.ajoudev.backend.dto.comment.request.NewCommentDTO;
 import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
-import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.service.comment.CommentingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

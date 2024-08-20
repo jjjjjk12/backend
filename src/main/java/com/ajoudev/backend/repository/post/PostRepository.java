@@ -10,9 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostingRepository {
     @Override
     @EntityGraph(attributePaths = {"user"})
     public Page<Post> findAll(Pageable pageable);

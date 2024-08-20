@@ -3,7 +3,6 @@ package com.ajoudev.backend.config;
 import com.ajoudev.backend.jwt.*;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.service.member.TokenService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +71,8 @@ public class SecurityConfig {
                 ,"/api/normal/list"
                 ,"/api/normal"
                 ,"/api/comment/list"
+                ,"/api/member/posts"
+                ,"/api/member/comments"
         };
 
         security.csrf(auth -> auth.disable());

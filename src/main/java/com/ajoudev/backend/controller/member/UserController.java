@@ -1,16 +1,20 @@
 package com.ajoudev.backend.controller.member;
 
+import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
+import com.ajoudev.backend.dto.comment.response.MyCommentPageDTO;
 import com.ajoudev.backend.dto.member.RegistrationMessageDTO;
 import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
-import com.ajoudev.backend.exception.post.PostingException;
+import com.ajoudev.backend.dto.post.response.PostPageDTO;
+import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.member.UserService;
+import com.ajoudev.backend.service.post.PostingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,4 +66,71 @@ public class UserController {
         return messageDTO;
     }
 
+    @GetMapping("/posts")
+    public PostMessageDTO viewPosts(@PageableDefault(size = 10) Pageable pageable,
+                                    @RequestParam String user) {
+        PostMessageDTO messageDTO;
+
+        try {
+            Page<PostPageDTO> posts = userService.viewPosts(user, pageable);
+            messageDTO = PostMessageDTO.builder()
+                    .status("success")
+                    .posts(posts)
+                    .build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+            return messageDTO;
+        }
+
+        return messageDTO;
+    }
+
+    @GetMapping("/likes")
+    public PostMessageDTO viewLikes(@PageableDefault(size = 10) Pageable pageable) {
+        PostMessageDTO messageDTO;
+
+        try {
+            Page<PostPageDTO> posts = userService.viewLiked(pageable);
+            messageDTO = PostMessageDTO.builder()
+                    .status("success")
+                    .posts(posts)
+                    .build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+            return messageDTO;
+        }
+
+        return messageDTO;
+    }
+
+    @GetMapping("/comments")
+    public CommentMessageDTO viewComments(@PageableDefault(size = 10) Pageable pageable,
+                                       @RequestParam String user) {
+        CommentMessageDTO messageDTO;
+
+        try {
+            Page<MyCommentPageDTO> comments = userService.viewComments(user, pageable);
+            messageDTO = CommentMessageDTO.builder()
+                    .status("success")
+                    .comments(comments)
+                    .build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+            return messageDTO;
+        }
+
+        return messageDTO;
+    }
 }
