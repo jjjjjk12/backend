@@ -76,14 +76,17 @@ public class CommentingService {
         if (member == null || comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
             throw new NotRemovableException();
 
+        Post post = comment.getPost();
+        post.deleteComments();
+
         if (commentRepository.countByParentComment(commentNum) > 1) {
             commentRepository.updateNull(commentNum);
         }
         else {
             commentRepository.deleteById(commentNum);
         }
+
         commentRepository.deleteAllNulls();
-        comment.getPost().deleteComments();
-        return commentRepository.searchPage(comment.getPost(), pageable);
+        return commentRepository.searchPage(post, pageable);
     }
 }

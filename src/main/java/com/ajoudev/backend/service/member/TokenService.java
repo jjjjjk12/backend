@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -30,12 +31,8 @@ public class TokenService {
         response.addHeader("Authorization", "Bearer " + access);
         response.addHeader("X-Refresh-Token", refresh);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy");
-        ZonedDateTime zonedDateTime = ZonedDateTime.parse(jwtUtil.getExpiration(refresh), formatter);
-        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-
         RefreshToken token = RefreshToken.builder()
-                .expiration(localDateTime)
+                .expiration(jwtUtil.getExpiration(refresh))
                 .refresh(refresh)
                 .userid(id).build();
 

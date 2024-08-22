@@ -12,6 +12,7 @@ import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.member.UserService;
 import com.ajoudev.backend.service.post.PostingService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +24,28 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping
+    public RegistrationMessageDTO view(@RequestParam String user) {
+        RegistrationMessageDTO messageDTO;
+
+        try {
+            UserDTO userDTO = userService.viewInfo(user);
+            messageDTO = RegistrationMessageDTO.builder()
+                    .status("success")
+                    .user(userDTO)
+                    .build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            messageDTO = RegistrationMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+            return messageDTO;
+        }
+
+        return messageDTO;
+    }
 
     @PostMapping("/delete")
     public RegistrationMessageDTO delete() {

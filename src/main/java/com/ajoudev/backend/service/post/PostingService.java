@@ -32,6 +32,7 @@ public class PostingService {
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
+        if (member == null) {throw new PostingException();}
 
         Post post = new Post();
         post.create(postDTO.getTitle(), postDTO.getTextBody(), "Nomal", member);

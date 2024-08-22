@@ -34,6 +34,14 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final BCryptPasswordEncoder encoder;
 
+    @Transactional(readOnly = true)
+    public UserDTO viewInfo(String userID) throws MemberException {
+        Member user = memberRepository.findByUserid(userID).orElse(null);
+        if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+
+        return user.toUserDTO();
+    }
+
     public void delete() throws MemberException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member user = memberRepository.findByUserid(id).orElse(null);
@@ -62,8 +70,11 @@ public class UserService {
         if (validatePW(userDTO.getPassword(), user)) throw new MemberException("잘못된 비밀번호입니다");
 
 
+        if (userDTO.getId() != null && userDTO.getId().equals(user.getUserid())) {
+            throw new MemberException("동일한 ID로 변경할 수 없습니다");
+        }
         if (memberRepository.existsByUserid(userDTO.getId())) {
-            throw new MemberException("중복된 아이디입니다");
+            throw new MemberException("이미 사용중인 아이디입니다");
         }
         for (ConstraintViolation<EditUserDTO> violation : Validation.buildDefaultValidatorFactory().getValidator().validate(userDTO)) {
             if(violation.getInvalidValue() == null) continue;
