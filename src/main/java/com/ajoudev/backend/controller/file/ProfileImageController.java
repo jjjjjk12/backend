@@ -32,7 +32,7 @@ public class ProfileImageController {
                     .status("success").build();
         } catch (IOException e) {
             messageDTO = FileUploadMessageDTO.builder().status("error").message("ERR_FAIL_TO_UPLOAD_IMAGE").build();
-        } catch (FileException e) {
+        } catch (RuntimeException e) {
             messageDTO = FileUploadMessageDTO.builder().status("error").message(e.getMessage()).build();
         }
         return messageDTO;
@@ -45,7 +45,7 @@ public class ProfileImageController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, downDTO.getMimeType())
                     .body(downDTO.getImage());
-        } catch (FileException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

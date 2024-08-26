@@ -1,9 +1,11 @@
 package com.ajoudev.backend.controller.post;
 
+import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
 import com.ajoudev.backend.dto.post.request.NewPostDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.exception.post.PostingException;
 import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.post.PostingService;
@@ -34,7 +36,14 @@ public class NormalPostController {
                     .status("success")
                     .post(viewPostDTO)
                     .build();
-        } catch (PostingException e) {
+        }catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (PostingException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
                     .status("error")
@@ -59,6 +68,12 @@ public class NormalPostController {
                     .post(viewPostDTO)
                     .comments(comments)
                     .build();
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
         } catch (RuntimeException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
@@ -82,7 +97,14 @@ public class NormalPostController {
                     .status("success")
                     .post(viewPostDTO)
                     .build();
-        } catch (PostingException e) {
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (PostingException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
                     .status("error")
@@ -111,7 +133,14 @@ public class NormalPostController {
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .build();
-        } catch (PostingException e) {
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (PostingException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
                     .status("error")

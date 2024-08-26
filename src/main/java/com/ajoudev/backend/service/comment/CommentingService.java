@@ -7,6 +7,7 @@ import com.ajoudev.backend.entity.comment.Comment;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.exception.comment.NullCommentBodyException;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.exception.post.NotEditableException;
 import com.ajoudev.backend.exception.post.NotRemovableException;
 import com.ajoudev.backend.exception.post.PostNotFoundException;
@@ -35,6 +36,7 @@ public class CommentingService {
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
@@ -61,7 +63,8 @@ public class CommentingService {
         Member member = memberRepository.findByUserid(id).orElse(null);
         Comment comment = commentRepository.findByCommentNum(commentDTO.getCommentNum()).orElse(null);
 
-        if (member == null || comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+        if (comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
             throw new NotEditableException();
 
         comment.editComment(commentDTO.getCommentBody());
@@ -73,7 +76,8 @@ public class CommentingService {
         Member member = memberRepository.findByUserid(id).orElse(null);
         Comment comment = commentRepository.findByCommentNum(commentNum).orElse(null);
 
-        if (member == null || comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+        if (comment == null || !member.getUserid().equals(comment.getUser().getUserid()))
             throw new NotRemovableException();
 
         Post post = comment.getPost();

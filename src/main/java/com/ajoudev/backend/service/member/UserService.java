@@ -45,7 +45,7 @@ public class UserService {
     public void delete() throws MemberException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member user = memberRepository.findByUserid(id).orElse(null);
-        if (user == null) throw new NotFoundUserException();
+        if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
 
         //좋아요 삭제
@@ -66,8 +66,8 @@ public class UserService {
     public UserDTO edit(EditUserDTO userDTO) throws MemberException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member user = memberRepository.findByUserid(id).orElse(null);
-        if (user == null) throw new NotFoundUserException("회원 정보를 수정할 수 없습니다");
-        if (validatePW(userDTO.getPassword(), user)) throw new MemberException("잘못된 비밀번호입니다");
+        if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+        if (!validatePW(userDTO.getPassword(), user)) throw new MemberException("잘못된 비밀번호입니다");
 
 
         if (userDTO.getId() != null && userDTO.getId().equals(user.getUserid())) {
@@ -108,6 +108,6 @@ public class UserService {
     }
 
     private boolean validatePW(String pw, Member user) {
-        return  (user.getPassword().equals(encoder.encode(pw)));
+        return  (encoder.matches(pw, user.getPassword()));
     }
 }

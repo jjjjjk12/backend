@@ -3,6 +3,7 @@ package com.ajoudev.backend.controller.comment;
 import com.ajoudev.backend.dto.comment.request.NewCommentReplyDTO;
 import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.service.comment.CommentReplyingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,12 @@ public class CommentReplyController {
             messageDTO = CommentMessageDTO.builder()
                     .status("success")
                     .comments(comments)
+                    .build();
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
                     .build();
         } catch (RuntimeException e) {
             e.printStackTrace();

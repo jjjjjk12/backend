@@ -8,6 +8,7 @@ import com.ajoudev.backend.dto.member.UserDTO;
 import com.ajoudev.backend.dto.member.UserRegistrationDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.dto.post.response.PostPageDTO;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.service.comment.CommentingService;
 import com.ajoudev.backend.service.member.UserService;
 import com.ajoudev.backend.service.post.PostingService;
@@ -56,7 +57,15 @@ public class UserController {
             messageDTO = RegistrationMessageDTO.builder()
                     .status("success")
                     .build();
-        } catch (RuntimeException e) {
+        }
+        catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = RegistrationMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (RuntimeException e) {
             e.printStackTrace();
             messageDTO = RegistrationMessageDTO.builder()
                     .status("error")

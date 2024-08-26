@@ -27,7 +27,7 @@ public class UserRegistrationService {
 
     public RegistrationMessageDTO registerMember(UserRegistrationDTO userRegistrationDTO) {
 
-        if (memberRepository.existsByUserid(userRegistrationDTO.getId())) {
+        if (memberRepository.existsByUserid(userRegistrationDTO.getId()) || userRegistrationDTO.getId().equals("anonymousUser")) {
             return RegistrationMessageDTO.builder().status("error").message("중복된 아이디입니다").build();
         }
         for (ConstraintViolation<UserRegistrationDTO> violation : Validation.buildDefaultValidatorFactory().getValidator().validate(userRegistrationDTO)) {

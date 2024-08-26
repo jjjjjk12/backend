@@ -1,10 +1,12 @@
 package com.ajoudev.backend.controller.like;
 
 
+import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.post.response.PostMessageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.exception.like.DuplicatedLikeException;
 import com.ajoudev.backend.exception.like.LikeException;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.service.like.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,14 @@ public class LikeController {
                     .status("success")
                     .post(viewPostDTO)
                     .build();
-        } catch (LikeException e) {
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = PostMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (LikeException e) {
             e.printStackTrace();
             messageDTO = PostMessageDTO.builder()
                     .status("error")

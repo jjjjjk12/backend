@@ -5,6 +5,7 @@ import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.exception.post.*;
 import com.ajoudev.backend.repository.comment.CommentRepository;
 import com.ajoudev.backend.repository.like.LikeRepository;
@@ -27,12 +28,12 @@ public class PostingService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
 
-    public ViewPostDTO createNewNormalPost(NewPostDTO postDTO) throws PostingException {
+    public ViewPostDTO createNewNormalPost(NewPostDTO postDTO) throws RuntimeException {
         validatePost(postDTO);
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
-        if (member == null) {throw new PostingException();}
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
         Post post = new Post();
         post.create(postDTO.getTitle(), postDTO.getTextBody(), "Nomal", member);
@@ -40,26 +41,26 @@ public class PostingService {
 
     }
 
-    public ViewPostDTO viewPost(Long postNum) {
+    public ViewPostDTO viewPost(Long postNum) throws RuntimeException {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
         post.addVisit();
 
-        String id;
-        try {
-            id = SecurityContextHolder.getContext().getAuthentication().getName();
-        } catch (Exception e) {
-            return post.toViewPostDTO(false);
-        }
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (id.equals("anonymousUser")) return post.toViewPostDTO(false);
 
         Member user = memberRepository.findByUserid(id).orElse(null);
+        if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
         return post.toViewPostDTO(likeRepository.existsByUserAndPost(user,post));
 
     }
 
-    public ViewPostDTO editPost(NewPostDTO postDTO, Long postNum) throws PostingException {
+    public ViewPostDTO editPost(NewPostDTO postDTO, Long postNum) throws RuntimeException {
         validatePost(postDTO);
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByUserid(id).orElse(null);
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
         if (post.getUser() == null || !id.equals(post.getUser().getUserid())) throw new NotEditableException();
@@ -74,8 +75,11 @@ public class PostingService {
         return page.map(Post::toPostPageDTO);
     }
 
-    public void deletePost(Long postNum) throws PostingException{
+    public void deletePost(Long postNum) throws RuntimeException{
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByUserid(id).orElse(null);
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
         if (!id.equals(post.getUser().getUserid())) throw new NotRemovableException();

@@ -5,6 +5,7 @@ import com.ajoudev.backend.dto.comment.request.EditCommentDTO;
 import com.ajoudev.backend.dto.comment.request.NewCommentDTO;
 import com.ajoudev.backend.dto.comment.response.CommentMessageDTO;
 import com.ajoudev.backend.dto.comment.response.CommentPageDTO;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.service.comment.CommentingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,14 @@ public class CommentController {
                     .status("success")
                     .comments(comments)
                     .build();
-        } catch (RuntimeException e) {
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (RuntimeException e) {
             e.printStackTrace();
             messageDTO = CommentMessageDTO.builder()
                     .status("error")
@@ -54,7 +62,14 @@ public class CommentController {
                     .status("success")
                     .comments(comments)
                     .build();
-        } catch (RuntimeException e) {
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
+                    .build();
+        }
+        catch (RuntimeException e) {
             e.printStackTrace();
             messageDTO = CommentMessageDTO.builder()
                     .status("error")
@@ -96,6 +111,12 @@ public class CommentController {
             messageDTO = CommentMessageDTO.builder()
                     .status("success")
                     .comments(comments)
+                    .build();
+        } catch (NotFoundUserException e) {
+            e.printStackTrace();
+            messageDTO = CommentMessageDTO.builder()
+                    .status("error")
+                    .message(e.getMessage())
                     .build();
         } catch (RuntimeException e) {
             e.printStackTrace();

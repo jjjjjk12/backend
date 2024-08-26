@@ -7,6 +7,7 @@ import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.exception.comment.CommentNotFoundException;
 import com.ajoudev.backend.exception.comment.NullCommentBodyException;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.exception.post.PostNotFoundException;
 import com.ajoudev.backend.repository.comment.CommentRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
@@ -30,6 +31,7 @@ public class CommentReplyingService {
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
         Comment parentComment = commentRepository.findByCommentNum(commentDTO.getParent()).orElse(null);
         if (parentComment == null) throw new CommentNotFoundException();

@@ -4,6 +4,7 @@ import com.ajoudev.backend.entity.file.ProfileImage;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.exception.file.FileException;
 import com.ajoudev.backend.exception.file.NotUploadableException;
+import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.repository.file.ProfileImageRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -24,11 +25,12 @@ public class FileUploadService {
     private final ProfileImageRepository profileImageRepository;
     private final MemberRepository memberRepository;
 
-    public void profileUpload(MultipartFile file) throws FileException, IOException {
+    public void profileUpload(MultipartFile file) throws RuntimeException, IOException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
 
-        if (member == null || !validateProfileImage(file)) {
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+        if (!validateProfileImage(file)) {
             throw new NotUploadableException("ERR_INVALID_PROFILE_IMAGE");
         }
 
