@@ -14,31 +14,33 @@ import java.time.ZonedDateTime;
 @Getter
 @Entity
 @Table(name = "post")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
 @NoArgsConstructor
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long postNum;
+    protected Long postNum;
     @Column(nullable = false)
-    private String title;
+    protected String title;
     @Lob
     @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String textBody;
+    protected String textBody;
     @Column(nullable = false)
-    private String postBoard;
+    protected String postBoard;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
-    private Member user;
+    protected Member user;
     @Column
-    private Long likeIt;
+    protected Long likeIt;
     @Column
-    private Long visit;
+    protected Long visit;
     @Column(nullable = false)
-    private LocalDateTime postingDate;
+    protected LocalDateTime postingDate;
     @Column
-    private Long comments;
+    protected Long comments;
 
     public void create(String title, String textBody, String postBoard, Member user) {
         this.title = title;
@@ -97,6 +99,5 @@ public class Post {
                 .build();
 
     }
-
 
 }

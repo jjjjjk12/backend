@@ -101,11 +101,12 @@ public class UserController {
 
     @GetMapping("/posts")
     public PostMessageDTO viewPosts(@PageableDefault(size = 10) Pageable pageable,
-                                    @RequestParam String user) {
+                                    @RequestParam String user,
+                                    @RequestParam(required = false) String board) {
         PostMessageDTO messageDTO;
 
         try {
-            Page<PostPageDTO> posts = userService.viewPosts(user, pageable);
+            Page<PostPageDTO> posts = userService.viewPosts(user, pageable, board);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .posts(posts)

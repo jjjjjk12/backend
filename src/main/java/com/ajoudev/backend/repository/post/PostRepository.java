@@ -12,13 +12,16 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostingRepository, SearchingRepository {
-    @Override
     @EntityGraph(attributePaths = {"user"})
-    public Page<Post> findAll(Pageable pageable);
+    public Page<Post> findAllByPostBoard(Pageable pageable, String postBoard);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE Post p SET p.user = null WHERE p.user = :user ")
     public void updateNullByUser(@Param("user") Member user);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE Post p SET p.user = null WHERE p = :post")
+    public void updateNullByPost(Post post);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE Post p SET p.comments = p.comments - (SELECT COUNT(c2) FROM  Comment c2 " +

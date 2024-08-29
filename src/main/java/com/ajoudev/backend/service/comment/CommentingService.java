@@ -16,7 +16,9 @@ import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +47,7 @@ public class CommentingService {
         post.addComments();
 
         commentRepository.save(comment);
-        return commentRepository.searchPage(post, pageable);
+        return commentRepository.searchPage(post, createPageRequest(post, pageable));
 
     }
 
@@ -53,7 +55,7 @@ public class CommentingService {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
 
-        return commentRepository.searchPage(post, pageable);
+        return commentRepository.searchPage(post, createPageRequest(post, pageable));
     }
 
     public Page<CommentPageDTO> editComment(EditCommentDTO commentDTO, Pageable pageable) throws RuntimeException {
@@ -68,7 +70,7 @@ public class CommentingService {
             throw new NotEditableException();
 
         comment.editComment(commentDTO.getCommentBody());
-        return commentRepository.searchPage(comment.getPost(), pageable);
+        return commentRepository.searchPage(comment.getPost(), createPageRequest(comment.getPost(), pageable));
     }
 
     public Page<CommentPageDTO> deleteComment(Long commentNum, Pageable pageable) throws RuntimeException {
@@ -91,6 +93,15 @@ public class CommentingService {
         }
 
         commentRepository.deleteAllNulls();
-        return commentRepository.searchPage(post, pageable);
+        return commentRepository.searchPage(post, createPageRequest(post, pageable));
+    }
+
+    private Pageable createPageRequest(Post post, Pageable pageable) {
+        if (post.getPostBoard().equals("Question")) {
+            return PageRequest.of(pageable.getPageNumber(), 3, Sort.Direction.DESC, "commentNum");
+        }
+        return pageable;
+
+
     }
 }

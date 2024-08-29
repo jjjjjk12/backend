@@ -13,7 +13,9 @@ import com.ajoudev.backend.repository.comment.CommentRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,10 @@ public class CommentReplyingService {
         Comment reply = new Comment();
         reply.createReply(commentDTO.getCommentBody(), post, member, parentComment.getCommentNum());
         post.addComments();
+
+        if (post.getPostBoard().equals("Question")) {
+            pageable = PageRequest.of(pageable.getPageNumber(), 3, Sort.Direction.DESC, "commentNum");
+        }
 
         commentRepository.save(reply);
         return commentRepository.searchPage(post, pageable);

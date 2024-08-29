@@ -10,6 +10,7 @@ import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.exception.member.MemberException;
 import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.repository.comment.CommentRepository;
+import com.ajoudev.backend.repository.like.DislikeRepository;
 import com.ajoudev.backend.repository.like.LikeRepository;
 import com.ajoudev.backend.repository.member.MemberRepository;
 import com.ajoudev.backend.repository.post.PostRepository;
@@ -33,6 +34,7 @@ public class UserService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final BCryptPasswordEncoder encoder;
+    private final DislikeRepository dislikeRepository;
 
     @Transactional(readOnly = true)
     public UserDTO viewInfo(String userID) throws MemberException {
@@ -50,6 +52,7 @@ public class UserService {
 
         //좋아요 삭제
         likeRepository.deleteByUser(user);
+        dislikeRepository.deleteByUser(user);
 
         //댓글 단 게시글의 댓글 수 조정 후 작성 게시글 null 처리
         postRepository.updateCommentsByUser(user);
@@ -92,11 +95,11 @@ public class UserService {
         return commentRepository.searchMyCommentPage(user, pageable);
     }
 
-    public Page<PostPageDTO> viewPosts(String userId, Pageable pageable) {
+    public Page<PostPageDTO> viewPosts(String userId, Pageable pageable, String board) {
         Member user = memberRepository.findByUserid(userId).orElse(null);
         if (user == null) throw new NotFoundUserException("존재하지 않는 회원입니다");
 
-        return postRepository.searchMyPostsPage(user, pageable);
+        return postRepository.searchMyPostsPage(user, pageable, board);
     }
 
     public Page<PostPageDTO> viewLiked(Pageable pageable) {

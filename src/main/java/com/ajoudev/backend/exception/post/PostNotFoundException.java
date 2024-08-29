@@ -4,7 +4,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class PostNotFoundException extends PostingException {
-    PostNotFoundException(String gripe) {
+    public PostNotFoundException(String gripe) {
         super(gripe);
     }
 }

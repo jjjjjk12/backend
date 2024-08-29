@@ -5,6 +5,7 @@ import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
+import com.ajoudev.backend.entity.post.QuestionPost;
 import com.ajoudev.backend.exception.member.NotFoundUserException;
 import com.ajoudev.backend.exception.post.*;
 import com.ajoudev.backend.repository.comment.CommentRepository;
@@ -28,15 +29,17 @@ public class PostingService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
 
-    public ViewPostDTO createNewNormalPost(NewPostDTO postDTO) throws RuntimeException {
+    public ViewPostDTO createNewPost(NewPostDTO postDTO, String board) throws RuntimeException {
         validatePost(postDTO);
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
         if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
-        Post post = new Post();
-        post.create(postDTO.getTitle(), postDTO.getTextBody(), "Nomal", member);
+        Post post;
+        if (board.equals("Question")) post = new QuestionPost();
+        else post = new Post();
+        post.create(postDTO.getTitle(), postDTO.getTextBody(), board, member);
         return postRepository.save(post).toViewPostDTO(false);
 
     }
@@ -71,7 +74,7 @@ public class PostingService {
 
     @Transactional(readOnly = true)
     public Page<PostPageDTO> findAll(Pageable pageable) {
-        Page<Post> page = postRepository.findAll(pageable);
+        Page<Post> page = postRepository.findAllByPostBoard(pageable, "Normal");
         return page.map(Post::toPostPageDTO);
     }
 
@@ -89,7 +92,7 @@ public class PostingService {
         postRepository.delete(post);
     }
 
-    private void validatePost(NewPostDTO postDTO) {
+    public void validatePost(NewPostDTO postDTO) {
         if (postDTO.getTitle() == null) throw new NullTitleException();
         if (postDTO.getTextBody() == null) throw new NullTextBodyException();
     }
