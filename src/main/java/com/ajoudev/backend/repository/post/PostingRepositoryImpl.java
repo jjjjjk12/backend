@@ -22,6 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.ajoudev.backend.entity.like.QLikeIt.*;
@@ -132,28 +133,21 @@ public class PostingRepositoryImpl implements PostingRepository{
                 .from(likeIt)
                 .join(likeIt.post, post)
                 .join(likeIt.user, QMember.member)
-                .where(likeIt.post.eq(JPAExpressions
-                        .select(QAnswerPost.answerPost._super)
-                        .from(QAnswerPost.answerPost)
-                        .where(QAnswerPost.answerPost.parent.eq(parent))
-                ), likeIt.user.eq(user))
+                .where(likeIt.post.postNum.eq(answer.postNum), likeIt.user.eq(user))
                 .exists() : Expressions.FALSE;
         BooleanExpression isDisliked = user != null ? JPAExpressions
                 .selectOne()
                 .from(QDislike.dislike)
                 .join(QDislike.dislike.post, post)
                 .join(QDislike.dislike.user, QMember.member)
-                .where(QDislike.dislike.post.eq(JPAExpressions
-                        .select(QAnswerPost.answerPost._super)
-                        .from(QAnswerPost.answerPost)
-                        .where(QAnswerPost.answerPost.parent.eq(parent))
-                ), QDislike.dislike.user.eq(user))
+                .where(QDislike.dislike.post.postNum.eq(answer.postNum), QDislike.dislike.user.eq(user))
                 .exists() : Expressions.FALSE;
 
         List<AnswerPageDTO> content = jpaQueryFactory
                 .select(new QAnswerPageDTO(
                         answer.postNum,
                         answer.title,
+                        answer.textBody,
                         answer.user.nickname,
                         answer.user.userid,
                         answer.postingDate,
@@ -161,7 +155,8 @@ public class PostingRepositoryImpl implements PostingRepository{
                         answer.dislikes,
                         answer.comments,
                         isLiked,
-                        isDisliked
+                        isDisliked,
+                        answer.isAdopted
                 ))
                 .from(answer)
                 .join(answer.user, postMember).on(answer.user.eq(postMember))
@@ -199,7 +194,6 @@ public class PostingRepositoryImpl implements PostingRepository{
                 .where(QDislike.dislike.post.postNum.eq(postNum), QDislike.dislike.user.eq(user))
                 .exists() : Expressions.FALSE;
 
-
         return  jpaQueryFactory
                 .select(new QViewAnswerDTO(
                         answer.postNum,
@@ -207,9 +201,10 @@ public class PostingRepositoryImpl implements PostingRepository{
                         answer.textBody,
                         answer.user.nickname,
                         answer.user.userid,
+                        answer.postingDate,
                         answer.likeIt,
                         answer.dislikes,
-                        answer.postingDate,
+                        answer.comments,
                         isLiked,
                         isDisliked,
                         answer.isAdopted

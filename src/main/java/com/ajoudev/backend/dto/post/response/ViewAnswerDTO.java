@@ -15,25 +15,27 @@ public class ViewAnswerDTO {
     private Long postNum;
     private String title;
     private String textBody;
-    private String id;
     private String user;
+    private String id;
+    private LocalDateTime postingDate;
     private Long like;
     private Long dislike;
-    private LocalDateTime postingDate;
-    private boolean isLiked;
-    private boolean isDisliked;
-    private boolean isAdopted;
+    private Long comment;
+    private Boolean isLiked;
+    private Boolean isDisliked;
+    private Boolean isAdopted;
 
     @QueryProjection
-    public ViewAnswerDTO(Long postNum, String title, String textBody, String id, String user, Long like, Long dislike, LocalDateTime postingDate, boolean isLiked, boolean isDisliked, boolean isAdopted) {
+    public ViewAnswerDTO(Long postNum, String title, String textBody, String user, String id, LocalDateTime postingDate, Long like, Long dislike, Long comment, Boolean isLiked, Boolean isDisliked, Boolean isAdopted) {
         this.postNum = postNum;
         this.title = title;
         this.textBody = textBody;
-        this.id = id;
         this.user = user;
+        this.id = id;
+        this.postingDate = postingDate;
         this.like = like;
         this.dislike = dislike;
-        this.postingDate = postingDate;
+        this.comment = comment;
         this.isLiked = isLiked;
         this.isDisliked = isDisliked;
         this.isAdopted = isAdopted;

@@ -42,6 +42,7 @@ public class AnswerPost extends Post {
                 .textBody(textBody)
                 .user(user.getNickname())
                 .postingDate(postingDate)
+                .comment(comments)
                 .like(likeIt)
                 .dislike(dislikes)
                 .id(user.getUserid())

@@ -76,6 +76,10 @@ public class SecurityConfig {
                 ,"/api/member/comments"
                 ,"/api/search/posts"
                 ,"/api/file/profile/download"
+                ,"/api/question"
+                ,"/api/question/list"
+                ,"/api/answer/list"
+                ,"/api/answer"
         };
 
         security.csrf(auth -> auth.disable());

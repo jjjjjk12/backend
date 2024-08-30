@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class AnswerPageDTO {
     private Long postNum;
     private String title;
+    private String textBody;
     private String user;
     private String id;
     private LocalDateTime postingDate;
@@ -22,12 +23,13 @@ public class AnswerPageDTO {
     private Long comment;
     private Boolean isLiked;
     private Boolean isDisliked;
+    private Boolean isAdopted;
 
     @QueryProjection
-
-    public AnswerPageDTO(Long postNum, String title, String user, String id, LocalDateTime postingDate, Long like, Long dislike, Long comment, Boolean isLiked, Boolean isDisliked) {
+    public AnswerPageDTO(Long postNum, String title, String textBody, String user, String id, LocalDateTime postingDate, Long like, Long dislike, Long comment, Boolean isLiked, Boolean isDisliked, Boolean isAdopted) {
         this.postNum = postNum;
         this.title = title;
+        this.textBody = textBody;
         this.user = user;
         this.id = id;
         this.postingDate = postingDate;
@@ -36,5 +38,6 @@ public class AnswerPageDTO {
         this.comment = comment;
         this.isLiked = isLiked;
         this.isDisliked = isDisliked;
+        this.isAdopted = isAdopted;
     }
 }

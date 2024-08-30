@@ -102,7 +102,12 @@ public class QuestionPostingService {
         QuestionPost post = (QuestionPost) postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
 
-        return postRepository.searchAnswers(pageable, post, null);
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (id.equals("anonymousUser")) postRepository.searchAnswers(pageable, post, null);
+        Member user = memberRepository.findByUserid(id).orElse(null);
+        if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+
+        return postRepository.searchAnswers(pageable, post, user);
     }
 
     public Page<QuestionPageDTO> viewQuestions(Pageable pageable) throws RuntimeException {
@@ -141,6 +146,20 @@ public class QuestionPostingService {
         if (post.getUser() == null || !id.equals(post.getUser().getUserid())) throw new NotEditableException();
 
         post.edit(postDTO.getTitle(), postDTO.getTextBody());
+        return post.toViewAnswerDTO(likeRepository.existsByUserAndPost(member, post),
+                dislikeRepository.existsByUserAndPost(member, post));
+    }
+
+    public ViewAnswerDTO viewAns(Long postNum) throws RuntimeException {
+        AnswerPost post = (AnswerPost) postRepository.findById(postNum).orElse(null);
+        if (post == null) throw new PostNotFoundException();
+
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberRepository.findByUserid(id).orElse(null);
+        if (id.equals("anonymousUser")) return post.toViewAnswerDTO(false, false);
+
+        if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
+
         return post.toViewAnswerDTO(likeRepository.existsByUserAndPost(member, post),
                 dislikeRepository.existsByUserAndPost(member, post));
     }

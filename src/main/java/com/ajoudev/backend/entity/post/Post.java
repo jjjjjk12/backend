@@ -77,11 +77,11 @@ public class Post {
                 .postNum(postNum)
                 .title(title)
                 .textBody(textBody)
-                .user(user.getNickname())
+                .user(user == null ? null : user.getNickname())
                 .postingDate(postingDate)
                 .like(likeIt)
                 .visit(visit)
-                .id(user.getUserid())
+                .id(user == null ? null : user.getUserid())
                 .isLiked(isLiked)
                 .build();
     }
