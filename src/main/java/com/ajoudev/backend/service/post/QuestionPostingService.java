@@ -103,7 +103,7 @@ public class QuestionPostingService {
         if (post == null) throw new PostNotFoundException();
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (id.equals("anonymousUser")) postRepository.searchAnswers(pageable, post, null);
+        if (id.equals("anonymousUser")) return postRepository.searchAnswers(pageable, post, null);
         Member user = memberRepository.findByUserid(id).orElse(null);
         if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 

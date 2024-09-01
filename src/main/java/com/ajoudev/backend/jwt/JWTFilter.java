@@ -25,7 +25,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String url = request.getRequestURI();
-        if(Arrays.asList(exceptURL).contains(url) && !url.equals("/api/normal")) {
+        if(Arrays.asList(exceptURL).contains(url) && !url.equals("/api/normal") && !url.equals("/api/question") && !url.equals("/api/answer")) {
             filterChain.doFilter(request, response);
             return;
         }

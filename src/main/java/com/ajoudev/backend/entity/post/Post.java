@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 @Table(name = "post")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn
+@DiscriminatorValue("NORMAL")
 @NoArgsConstructor
 public class Post {
 
@@ -81,6 +82,7 @@ public class Post {
                 .postingDate(postingDate)
                 .like(likeIt)
                 .visit(visit)
+                .comment(comments)
                 .id(user == null ? null : user.getUserid())
                 .isLiked(isLiked)
                 .build();

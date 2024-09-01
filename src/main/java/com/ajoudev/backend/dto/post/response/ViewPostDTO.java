@@ -18,11 +18,12 @@ public class ViewPostDTO {
     private String user;
     private Long like;
     private Long visit;
+    private Long comment;
     private LocalDateTime postingDate;
     private boolean isLiked;
 
     @QueryProjection
-    public ViewPostDTO(Long postNum, String title, String textBody, String id, String user, Long like, Long visit, LocalDateTime postingDate, boolean isLiked) {
+    public ViewPostDTO(Long postNum, String title, String textBody, String id, String user, Long like, Long visit, Long comment, LocalDateTime postingDate, boolean isLiked) {
         this.postNum = postNum;
         this.title = title;
         this.textBody = textBody;
@@ -30,6 +31,7 @@ public class ViewPostDTO {
         this.user = user;
         this.like = like;
         this.visit = visit;
+        this.comment = comment;
         this.postingDate = postingDate;
         this.isLiked = isLiked;
     }
