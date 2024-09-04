@@ -113,7 +113,7 @@ public class QuestionPostController {
 
         try {
             ViewPostDTO viewPostDTO = postingService.viewPost(post);
-            Slice<AnswerPageDTO> answers = questionPostingService.viewAnswers(pageable, post);
+            Page<AnswerPageDTO> answers = questionPostingService.viewAnswers(pageable, post);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .post(viewPostDTO)

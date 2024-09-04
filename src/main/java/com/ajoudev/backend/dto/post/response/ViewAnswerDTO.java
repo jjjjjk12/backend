@@ -24,9 +24,10 @@ public class ViewAnswerDTO {
     private Boolean isLiked;
     private Boolean isDisliked;
     private Boolean isAdopted;
+    private String board;
 
     @QueryProjection
-    public ViewAnswerDTO(Long postNum, String title, String textBody, String user, String id, LocalDateTime postingDate, Long like, Long dislike, Long comment, Boolean isLiked, Boolean isDisliked, Boolean isAdopted) {
+    public ViewAnswerDTO(Long postNum, String title, String textBody, String user, String id, LocalDateTime postingDate, Long like, Long dislike, Long comment, Boolean isLiked, Boolean isDisliked, Boolean isAdopted, String board) {
         this.postNum = postNum;
         this.title = title;
         this.textBody = textBody;
@@ -39,5 +40,6 @@ public class ViewAnswerDTO {
         this.isLiked = isLiked;
         this.isDisliked = isDisliked;
         this.isAdopted = isAdopted;
+        this.board = board;
     }
 }

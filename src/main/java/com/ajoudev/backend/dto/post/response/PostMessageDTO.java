@@ -21,6 +21,6 @@ public class PostMessageDTO {
     private ViewAnswerDTO answer;
     private Page<PostPageDTO> posts;
     private Page<QuestionPageDTO> questions;
-    private Slice<AnswerPageDTO> answers;
+    private Page<AnswerPageDTO> answers;
     private Page<CommentPageDTO> comments;
 }

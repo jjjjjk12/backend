@@ -49,6 +49,7 @@ public class AnswerPost extends Post {
                 .isLiked(isLiked)
                 .isDisliked(isDisliked)
                 .isAdopted(isAdopted)
+                .board(postBoard)
                 .build();
 
     }

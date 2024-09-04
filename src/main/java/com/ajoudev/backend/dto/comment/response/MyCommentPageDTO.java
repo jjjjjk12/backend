@@ -18,9 +18,10 @@ public class MyCommentPageDTO implements CommentDTO{
     private LocalDateTime commentingDate;
     private String postTitle;
     private Long postNum;
+    private String board;
 
     @QueryProjection
-    public MyCommentPageDTO(String commentBody, Long commentNum, String user, String id, LocalDateTime commentingDate, String postTitle, Long postNum) {
+    public MyCommentPageDTO(String commentBody, Long commentNum, String user, String id, LocalDateTime commentingDate, String postTitle, Long postNum, String board) {
         this.commentBody = commentBody;
         this.commentNum = commentNum;
         this.user = user;
@@ -28,5 +29,6 @@ public class MyCommentPageDTO implements CommentDTO{
         this.commentingDate = commentingDate;
         this.postTitle = postTitle;
         this.postNum = postNum;
+        this.board = board;
     }
 }

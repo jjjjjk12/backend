@@ -4,6 +4,7 @@ import com.ajoudev.backend.dto.post.request.NewPostDTO;
 import com.ajoudev.backend.dto.post.response.PostPageDTO;
 import com.ajoudev.backend.dto.post.response.ViewPostDTO;
 import com.ajoudev.backend.entity.member.Member;
+import com.ajoudev.backend.entity.post.AnswerPost;
 import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.entity.post.QuestionPost;
 import com.ajoudev.backend.exception.member.NotFoundUserException;
@@ -47,6 +48,10 @@ public class PostingService {
     public ViewPostDTO viewPost(Long postNum) throws RuntimeException {
         Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
+        if (post.getPostBoard().equals("Answer")) {
+            AnswerPost answerPost = (AnswerPost) post;
+            post = answerPost.getParent();
+        }
         post.addVisit();
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();

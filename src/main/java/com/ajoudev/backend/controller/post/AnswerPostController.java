@@ -6,6 +6,7 @@ import com.ajoudev.backend.service.post.PostingService;
 import com.ajoudev.backend.service.post.QuestionPostingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +26,7 @@ public class AnswerPostController {
         PostMessageDTO messageDTO;
 
         try {
-            Slice<AnswerPageDTO> posts = questionPostingService.createAns(postDTO, post, pageable);
+            Page<AnswerPageDTO> posts = questionPostingService.createAns(postDTO, post, pageable);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .answers(posts)
@@ -90,7 +91,7 @@ public class AnswerPostController {
         PostMessageDTO messageDTO;
 
         try {
-            Slice<AnswerPageDTO> answers = questionPostingService.viewAnswers(pageable, post);
+            Page<AnswerPageDTO> answers = questionPostingService.viewAnswers(pageable, post);
             messageDTO = PostMessageDTO.builder()
                     .status("success")
                     .answers(answers)

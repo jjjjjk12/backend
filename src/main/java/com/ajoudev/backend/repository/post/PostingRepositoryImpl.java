@@ -44,7 +44,8 @@ public class PostingRepositoryImpl implements PostingRepository{
                         post.postingDate,
                         post.visit,
                         post.likeIt,
-                        post.comments
+                        post.comments,
+                        post.postBoard
                 ))
                 .from(likeIt)
                 .join(likeIt.post, post).on(likeIt.post.eq(post))
@@ -76,7 +77,8 @@ public class PostingRepositoryImpl implements PostingRepository{
                         post.postingDate,
                         post.visit,
                         post.likeIt,
-                        post.comments
+                        post.comments,
+                        post.postBoard
                 ))
                 .from(post)
                 .join(post.user, postMember).on(post.user.eq(postMember))
@@ -108,10 +110,11 @@ public class PostingRepositoryImpl implements PostingRepository{
                         quest.visit,
                         quest.likeIt,
                         quest.answers,
-                        quest.comments
+                        quest.comments,
+                        quest.postBoard
                 ))
                 .from(quest)
-                .join(quest.user, postMember).on(quest.user.eq(postMember))
+                .leftJoin(quest.user, postMember)
                 .orderBy(quest.postNum.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -125,7 +128,7 @@ public class PostingRepositoryImpl implements PostingRepository{
     }
 
     @Override
-    public Slice<AnswerPageDTO> searchAnswers(Pageable pageable, QuestionPost parent, Member user) {
+    public Page<AnswerPageDTO> searchAnswers(Pageable pageable, QuestionPost parent, Member user) {
         QMember postMember = new QMember("postMember");
         QAnswerPost answer = new QAnswerPost("answer");
         BooleanExpression isLiked = user != null ? JPAExpressions
@@ -156,23 +159,24 @@ public class PostingRepositoryImpl implements PostingRepository{
                         answer.comments,
                         isLiked,
                         isDisliked,
-                        answer.isAdopted
+                        answer.isAdopted,
+                        answer.postBoard
                 ))
                 .from(answer)
                 .join(answer.user, postMember).on(answer.user.eq(postMember))
                 .where(answer.parent.eq(parent))
                 .orderBy(answer.isAdopted.desc(), answer.likeIt.desc(), answer.dislikes.asc() ,answer.postNum.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize())
                 .fetch();
 
+
+        JPAQuery<Long> cnt = jpaQueryFactory
+                .select(answer.count())
+                .from(answer)
+                .where(answer.parent.eq(parent));
         boolean hasNext = content.size() > pageable.getPageSize();
-
-        if (hasNext) {
-            content.removeLast();
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
+        return PageableExecutionUtils.getPage(content, pageable, cnt::fetchOne);
     }
 
     @Override
@@ -207,7 +211,8 @@ public class PostingRepositoryImpl implements PostingRepository{
                         answer.comments,
                         isLiked,
                         isDisliked,
-                        answer.isAdopted
+                        answer.isAdopted,
+                        answer.postBoard
                 ))
                 .from(answer)
                 .join(answer.user, postMember)

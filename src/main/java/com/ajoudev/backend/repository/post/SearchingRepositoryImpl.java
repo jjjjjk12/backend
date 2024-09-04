@@ -31,7 +31,8 @@ public class SearchingRepositoryImpl implements SearchingRepository {
                         post.postingDate,
                         post.visit,
                         post.likeIt,
-                        post.comments
+                        post.comments,
+                        post.postBoard
                 ))
                 .from(post)
                 .join(post.user, QMember.member).on(post.user.eq(QMember.member))

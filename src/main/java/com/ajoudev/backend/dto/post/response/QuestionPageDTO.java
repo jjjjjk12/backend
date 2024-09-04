@@ -21,9 +21,10 @@ public class QuestionPageDTO {
     private Long like;
     private Long answer;
     private Long comment;
+    private String board;
 
     @QueryProjection
-    public QuestionPageDTO(Long postNum, String title, String user, String id, LocalDateTime postingDate, Long visit, Long like, Long answer, Long comment) {
+    public QuestionPageDTO(Long postNum, String title, String user, String id, LocalDateTime postingDate, Long visit, Long like, Long answer, Long comment, String board) {
         this.postNum = postNum;
         this.title = title;
         this.user = user;
@@ -33,5 +34,6 @@ public class QuestionPageDTO {
         this.like = like;
         this.answer = answer;
         this.comment = comment;
+        this.board = board;
     }
 }

@@ -38,7 +38,7 @@ public class QuestionPostingService {
     private final PostingService postingService;
     private final DislikeRepository dislikeRepository;
 
-    public Slice<AnswerPageDTO> createAns(NewPostDTO postDTO, Long parentNum, Pageable pageable) throws RuntimeException {
+    public Page<AnswerPageDTO> createAns(NewPostDTO postDTO, Long parentNum, Pageable pageable) throws RuntimeException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
         if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
@@ -78,7 +78,7 @@ public class QuestionPostingService {
 
     }
 
-    public Slice<AnswerPageDTO> deleteAnswer(Long postNum, Pageable pageable) throws RuntimeException {
+    public void deleteAnswer(Long postNum, Pageable pageable) throws RuntimeException {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = memberRepository.findByUserid(id).orElse(null);
         if (member == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
@@ -95,19 +95,23 @@ public class QuestionPostingService {
         commentRepository.deleteByPost(post);
         postRepository.delete(post);
 
-        return postRepository.searchAnswers(pageable, parent, member);
     }
 
-    public Slice<AnswerPageDTO> viewAnswers(Pageable pageable, Long postNum) throws RuntimeException {
-        QuestionPost post = (QuestionPost) postRepository.findById(postNum).orElse(null);
+    public Page<AnswerPageDTO> viewAnswers(Pageable pageable, Long postNum) throws RuntimeException {
+        Post post = postRepository.findById(postNum).orElse(null);
         if (post == null) throw new PostNotFoundException();
+        if (post.getPostBoard().equals("Answer")) {
+            AnswerPost answerPost = (AnswerPost) post;
+            post = answerPost.getParent();
+        }
+        QuestionPost questionPost = (QuestionPost) post;
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (id.equals("anonymousUser")) return postRepository.searchAnswers(pageable, post, null);
+        if (id.equals("anonymousUser")) return postRepository.searchAnswers(pageable, questionPost, null);
         Member user = memberRepository.findByUserid(id).orElse(null);
         if (user == null) throw new NotFoundUserException("ERR_USER_NOT_FOUND");
 
-        return postRepository.searchAnswers(pageable, post, user);
+        return postRepository.searchAnswers(pageable, questionPost, user);
     }
 
     public Page<QuestionPageDTO> viewQuestions(Pageable pageable) throws RuntimeException {

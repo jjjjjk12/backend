@@ -62,7 +62,14 @@ public class LikeService {
         if (post == null) throw new LikeException();
 
         LikeIt like = likeRepository.findByUserAndPost(member, post).orElse(null);
-        if (like != null){
+        Dislike dislike = dislikeRepository.findByUserAndPost(member, post).orElse(null);
+
+        if (dislike != null){
+            dislikeRepository.delete(dislike);
+            post.cancelDislike();
+        }
+
+        if (like != null) {
             likeRepository.delete(like);
             post.cancelLike();
             return post.toViewAnswerDTO(false, dislikeRepository.existsByUserAndPost(member, post));
@@ -87,6 +94,13 @@ public class LikeService {
         if (post == null) throw new LikeException();
 
         Dislike dislike = dislikeRepository.findByUserAndPost(member, post).orElse(null);
+        LikeIt like = likeRepository.findByUserAndPost(member, post).orElse(null);
+
+        if (like != null){
+            likeRepository.delete(like);
+            post.cancelDislike();
+        }
+
         if (dislike != null){
             dislikeRepository.delete(dislike);
             post.cancelDislike();

@@ -65,7 +65,8 @@ public class CommentingRepositoryImpl implements CommentingRepository {
                         comment.user.userid,
                         comment.commentingDate,
                         post.title,
-                        post.postNum
+                        post.postNum,
+                        post.postBoard
                 ))
                 .from(comment)
                 .join(comment.user, commentMember).on(comment.user.eq(commentMember))

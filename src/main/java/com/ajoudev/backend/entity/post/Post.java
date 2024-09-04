@@ -85,6 +85,7 @@ public class Post {
                 .comment(comments)
                 .id(user == null ? null : user.getUserid())
                 .isLiked(isLiked)
+                .board(postBoard)
                 .build();
     }
 

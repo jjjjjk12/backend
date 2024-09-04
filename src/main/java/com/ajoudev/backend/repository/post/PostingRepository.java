@@ -14,6 +14,6 @@ public interface PostingRepository {
     public Page<PostPageDTO> searchLikedPostsPage(Member user, Pageable pageable);
     public Page<PostPageDTO> searchMyPostsPage(Member user, Pageable pageable, String board);
     public Page<QuestionPageDTO> searchQuestions(Pageable pageable);
-    public Slice<AnswerPageDTO> searchAnswers(Pageable pageable, QuestionPost parent, Member user);
+    public Page<AnswerPageDTO> searchAnswers(Pageable pageable, QuestionPost parent, Member user);
     public ViewAnswerDTO findAnswerByUserAndPostNum(Member user, Long postNum);
 }
