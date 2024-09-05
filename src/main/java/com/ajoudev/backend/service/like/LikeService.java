@@ -98,7 +98,7 @@ public class LikeService {
 
         if (like != null){
             likeRepository.delete(like);
-            post.cancelDislike();
+            post.cancelLike();
         }
 
         if (dislike != null){
