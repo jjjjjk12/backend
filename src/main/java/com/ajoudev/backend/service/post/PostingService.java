@@ -53,6 +53,11 @@ public class PostingService {
             post = answerPost.getParent();
         }
         post.addVisit();
+        if (post.getPostBoard().equals("Question")) {
+            postRepository.updateAnswerVisitByParent((QuestionPost) post, post.getVisit());
+        }
+
+
 
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         if (id.equals("anonymousUser")) return post.toViewPostDTO(false);

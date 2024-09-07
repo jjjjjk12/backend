@@ -28,6 +28,7 @@ public class AnswerPost extends Post {
         this.isAdopted = false;
         this.dislikes = 0L;
         this.parent = parent;
+        this.visit = parent.getVisit();
     }
 
     public boolean adopted() { return isAdopted = true; }

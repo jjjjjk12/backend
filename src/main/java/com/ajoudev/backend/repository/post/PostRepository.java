@@ -2,6 +2,7 @@ package com.ajoudev.backend.repository.post;
 
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.post.Post;
+import com.ajoudev.backend.entity.post.QuestionPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -28,5 +29,9 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostingReposi
             "WHERE c2.user = :user AND c2.post = p) " +
             "WHERE EXISTS (SELECT 1 FROM Comment c WHERE c.user = :user AND c.post = p)")
     public void updateCommentsByUser(@Param("user") Member user);
+
+    @Modifying(flushAutomatically = true)
+    @Query(value = "Update AnswerPost p SET p.visit = :visit WHERE p.parent = :parent")
+    public void updateAnswerVisitByParent(QuestionPost parent, Long visit);
 
 }
