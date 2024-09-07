@@ -4,12 +4,9 @@ import com.ajoudev.backend.dto.post.response.*;
 import com.ajoudev.backend.entity.like.QDislike;
 import com.ajoudev.backend.entity.member.Member;
 import com.ajoudev.backend.entity.member.QMember;
-import com.ajoudev.backend.entity.post.Post;
 import com.ajoudev.backend.entity.post.QAnswerPost;
 import com.ajoudev.backend.entity.post.QQuestionPost;
 import com.ajoudev.backend.entity.post.QuestionPost;
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -18,11 +15,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.ajoudev.backend.entity.like.QLikeIt.*;
@@ -50,7 +44,7 @@ public class PostingRepositoryImpl implements PostingRepository{
                 .from(likeIt)
                 .join(likeIt.post, post).on(likeIt.post.eq(post))
                 .join(likeIt.post.user, postMember).on(likeIt.post.user.eq(postMember))
-                .where(likeIt.user.eq(user))
+                .where(likeIt.user.eq(user), likeIt.post.postBoard.ne("Question"))
                 .orderBy(likeIt.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -175,7 +169,6 @@ public class PostingRepositoryImpl implements PostingRepository{
                 .select(answer.count())
                 .from(answer)
                 .where(answer.parent.eq(parent));
-        boolean hasNext = content.size() > pageable.getPageSize();
         return PageableExecutionUtils.getPage(content, pageable, cnt::fetchOne);
     }
 
